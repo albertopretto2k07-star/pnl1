@@ -12,7 +12,8 @@ const fadeUp = {
 }
 
 const stagger = {
-  visible: { transition: { staggerChildren: 0.08 } }
+  hidden: { opacity: 1 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.08 } }
 }
 
 // Simulated user data

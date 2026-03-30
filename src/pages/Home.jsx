@@ -13,7 +13,8 @@ const fadeUp = {
 }
 
 const stagger = {
-  visible: { transition: { staggerChildren: 0.1 } }
+  hidden: { opacity: 1 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
 }
 
 const iconMap = {
