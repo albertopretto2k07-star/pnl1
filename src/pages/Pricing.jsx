@@ -2,20 +2,16 @@ import { motion } from 'framer-motion'
 import { Check, Sparkles, ArrowRight } from 'lucide-react'
 import { pricingPlans } from '../data/pnlContent'
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
-}
+const fade = (delay = 0) => ({
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5, delay }
+})
 
-const stagger = {
-  hidden: { opacity: 1 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
-}
-
-function PricingCard({ plan }) {
+function PricingCard({ plan, index }) {
   return (
     <motion.div
-      variants={fadeUp}
+      {...fade(index * 0.1)}
       className={`rounded-2xl p-6 sm:p-8 flex flex-col h-full transition-all ${
         plan.highlighted
           ? 'glass border-primary-500/40 relative overflow-hidden'
@@ -41,7 +37,7 @@ function PricingCard({ plan }) {
         ) : (
           <>
             <span className="font-display text-4xl font-bold text-white">
-              {plan.price === '0' ? 'Gratis' : `€${plan.price}`}
+              {plan.price === '0' ? 'Gratis' : `\u20AC${plan.price}`}
             </span>
             {plan.period && plan.price !== '0' && (
               <span className="text-surface-400 ml-1">{plan.period}</span>
@@ -63,9 +59,7 @@ function PricingCard({ plan }) {
 
       <button
         className={`w-full py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all ${
-          plan.highlighted
-            ? 'btn-primary'
-            : 'btn-secondary'
+          plan.highlighted ? 'btn-primary' : 'btn-secondary'
         }`}
       >
         {plan.cta}
@@ -81,84 +75,77 @@ export default function Pricing({ userMode, setUserMode }) {
   return (
     <section className="pt-24 pb-16 px-4">
       <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={stagger}
-        >
-          {/* Header */}
-          <motion.div variants={fadeUp} className="text-center mb-12">
-            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-              {userMode === 'b2b' ? 'Piani per Aziende' : 'Scegli il tuo Piano'}
-            </h1>
-            <p className="text-surface-300 max-w-xl mx-auto mb-8">
-              {userMode === 'b2b'
-                ? 'Investire nelle competenze del tuo team ha un ROI misurabile. Scegli il piano adatto alla tua organizzazione.'
-                : 'Inizia gratuitamente e sblocca il pieno potenziale della tua mente quando sei pronto.'
-              }
-            </p>
+        {/* Header */}
+        <motion.div {...fade(0)} className="text-center mb-12">
+          <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+            {userMode === 'b2b' ? 'Piani per Aziende' : 'Scegli il tuo Piano'}
+          </h1>
+          <p className="text-surface-300 max-w-xl mx-auto mb-8">
+            {userMode === 'b2b'
+              ? 'Investire nelle competenze del tuo team ha un ROI misurabile. Scegli il piano adatto alla tua organizzazione.'
+              : 'Inizia gratuitamente e sblocca il pieno potenziale della tua mente quando sei pronto.'
+            }
+          </p>
 
-            {/* Mode toggle */}
-            <div className="inline-flex items-center bg-surface-800 rounded-xl p-1 border border-surface-700">
-              <button
-                onClick={() => setUserMode('b2c')}
-                className={`px-6 py-2.5 rounded-lg text-sm font-semibold transition-all ${
-                  userMode === 'b2c'
-                    ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20'
-                    : 'text-surface-400 hover:text-white'
-                }`}
-              >
-                Privati
-              </button>
-              <button
-                onClick={() => setUserMode('b2b')}
-                className={`px-6 py-2.5 rounded-lg text-sm font-semibold transition-all ${
-                  userMode === 'b2b'
-                    ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20'
-                    : 'text-surface-400 hover:text-white'
-                }`}
-              >
-                Aziende
-              </button>
-            </div>
-          </motion.div>
-
-          {/* Pricing cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {plans.map(plan => (
-              <PricingCard key={plan.name} plan={plan} />
-            ))}
+          <div className="inline-flex items-center bg-surface-800 rounded-xl p-1 border border-surface-700">
+            <button
+              onClick={() => setUserMode('b2c')}
+              className={`px-6 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+                userMode === 'b2c'
+                  ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20'
+                  : 'text-surface-400 hover:text-white'
+              }`}
+            >
+              Privati
+            </button>
+            <button
+              onClick={() => setUserMode('b2b')}
+              className={`px-6 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+                userMode === 'b2b'
+                  ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20'
+                  : 'text-surface-400 hover:text-white'
+              }`}
+            >
+              Aziende
+            </button>
           </div>
+        </motion.div>
 
-          {/* FAQ / Trust */}
-          <motion.div variants={fadeUp} className="mt-16 text-center">
-            <div className="glass rounded-2xl p-8 max-w-3xl mx-auto">
-              <h3 className="font-display text-xl font-bold text-white mb-6">Domande Frequenti</h3>
-              <div className="space-y-4 text-left">
-                {[
-                  {
-                    q: 'Posso provare gratuitamente?',
-                    a: userMode === 'b2b'
-                      ? 'Si! Offriamo una demo gratuita con setup completo in 24 ore. Nessun impegno.'
-                      : 'Certo! Il piano Free include accesso a 3 lezioni e il piano Pro ha 7 giorni di prova gratuita.'
-                  },
-                  {
-                    q: 'I contenuti sono scientificamente validati?',
-                    a: 'Tutti i nostri contenuti si basano su ricerche pubblicate su riviste peer-reviewed di neuroscienze e psicologia cognitiva.'
-                  },
-                  {
-                    q: 'Posso annullare in qualsiasi momento?',
-                    a: 'Si, puoi annullare il tuo abbonamento in qualsiasi momento senza penali. Nessun vincolo contrattuale.'
-                  }
-                ].map((faq, i) => (
-                  <div key={i} className="p-4 rounded-xl bg-surface-800/30 border border-white/5">
-                    <p className="text-sm font-semibold text-white mb-1">{faq.q}</p>
-                    <p className="text-sm text-surface-400">{faq.a}</p>
-                  </div>
-                ))}
-              </div>
+        {/* Pricing cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {plans.map((plan, i) => (
+            <PricingCard key={plan.name} plan={plan} index={i} />
+          ))}
+        </div>
+
+        {/* FAQ */}
+        <motion.div {...fade(0.3)} className="mt-16 text-center">
+          <div className="glass rounded-2xl p-8 max-w-3xl mx-auto">
+            <h3 className="font-display text-xl font-bold text-white mb-6">Domande Frequenti</h3>
+            <div className="space-y-4 text-left">
+              {[
+                {
+                  q: 'Posso provare gratuitamente?',
+                  a: userMode === 'b2b'
+                    ? 'Si! Offriamo una demo gratuita con setup completo in 24 ore. Nessun impegno.'
+                    : 'Certo! Il piano Free include accesso a 3 lezioni e il piano Pro ha 7 giorni di prova gratuita.'
+                },
+                {
+                  q: 'I contenuti sono scientificamente validati?',
+                  a: 'Tutti i nostri contenuti si basano su ricerche pubblicate su riviste peer-reviewed di neuroscienze e psicologia cognitiva.'
+                },
+                {
+                  q: 'Posso annullare in qualsiasi momento?',
+                  a: 'Si, puoi annullare il tuo abbonamento in qualsiasi momento senza penali. Nessun vincolo contrattuale.'
+                }
+              ].map((faq, i) => (
+                <div key={i} className="p-4 rounded-xl bg-surface-800/30 border border-white/5">
+                  <p className="text-sm font-semibold text-white mb-1">{faq.q}</p>
+                  <p className="text-sm text-surface-400">{faq.a}</p>
+                </div>
+              ))}
             </div>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>
